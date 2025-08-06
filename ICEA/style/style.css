@@ -1,0 +1,28 @@
+body {
+  font-family: sans-serif;
+  margin: 2rem;
+  background: #fafafa;
+}
+
+#chart {
+  width: 100%;
+  margin: 0 auto;
+}
+
+svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.axis text, .legend text {
+  font-size: 12px;
+}
+
+.bar {
+  fill: steelblue;
+}
+
+.bar:hover {
+  fill: orange;
+}
