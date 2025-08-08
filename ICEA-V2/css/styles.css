@@ -1,0 +1,15 @@
+body {
+  font-family: Arial, sans-serif;
+  background: #fafafa;
+  margin: 0;
+  padding: 2rem;
+}
+
+#visualization {
+  margin: 2rem 0;
+}
+
+body, svg {
+  font-family: 'Roboto Condensed', Arial, Helvetica, sans-serif;
+}
+
