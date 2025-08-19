@@ -20,7 +20,7 @@ import { createScales } from "./scales.js";
 import { renderAxes } from "./axes.js";
 import { drawGridlines } from "./gridlines.js";
 import { drawLinesAndMarkers } from "./lines.js";
-import { addRightLabels } from "./labels.js";
+import { addRightLabels, bindRightLabelHover } from "./labels.js";
 import { addLegend } from "./legend.js";
 import { addTooltip } from "./tooltip.js";
 
@@ -80,8 +80,11 @@ export function visualizeData(preparedData, rawData) {
   // --- Labels derechos (anti-colisión + leader lines opcionales) ---
   addRightLabels(g, preparedData.data, labels, colors, lineElements, yScale);
 
-  // --- Leyenda interactiva ---
-  addLegend(svg, g, labels, colors, lineElements);
+  // --- Leyenda interactiva (IMPORTANTE: capturar seriesVisible) ---
+  const seriesVisible = addLegend(svg, g, labels, colors, lineElements);
+
+  // --- Hover en labels derechos (necesita seriesVisible) ---
+  bindRightLabelHover(g, lineElements, seriesVisible);
 
   // --- Tooltip flotante + guideline vertical ---
   addTooltip(g, preparedData.data, xScale, yScale, colors, labels, xGridTicks);

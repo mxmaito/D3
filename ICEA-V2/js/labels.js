@@ -5,8 +5,10 @@
 
 import {
   CHART_WIDTH, CHART_MARGINS, LABEL_MIN_DISTANCE,
-  SHOW_LEADER_LINES, LABEL_FONT_SIZE, LABEL_FONT_WEIGHT, FONT_FAMILY
+  SHOW_LEADER_LINES, LABEL_FONT_SIZE, LABEL_FONT_WEIGHT, FONT_FAMILY,
+  LINE_STROKE_WIDTH, LINE_STROKE_WIDTH_HOVER, LABEL_FONT_WEIGHT_WITH_HOVER
 } from "./config.js";
+
 
 import { truncateTextToWidth } from "./utils.js";
 
@@ -94,3 +96,44 @@ export function addRightLabels(g, data, labels, colors, lineElements, yScale) {
     }
   });
 }
+
+// ------------------------------------------------------------
+// Hover para labels derechos (resalta serie y atenúa el resto)
+// ------------------------------------------------------------
+export function bindRightLabelHover(g, lineElements, seriesVisible) {
+  lineElements.forEach((lineEl, i) => {
+    const rightLabel = lineEl && lineEl.rightLabel;
+    if (!rightLabel) return;
+
+    rightLabel
+      .style("cursor", "pointer")
+      .on("mouseover", function () {
+        if (seriesVisible && seriesVisible[i] === false) return;
+        lineElements.forEach((l, j) => {
+          if (!l) return;
+          if (j === i) {
+            l.style("stroke-width", LINE_STROKE_WIDTH_HOVER).style("opacity", 1);
+            const rl = l.rightLabel;
+            if (rl) rl.style("font-weight", LABEL_FONT_WEIGHT_WITH_HOVER).style("opacity", 1);
+            g.select(`.markers-${j}`).style("opacity", 1);
+          } else {
+            l.style("opacity", 0.15);
+            const rl = l.rightLabel;
+            if (rl) rl.style("opacity", 0.2);
+            g.select(`.markers-${j}`).style("opacity", 0.15);
+          }
+        });
+      })
+      .on("mouseout", function () {
+        lineElements.forEach((l, j) => {
+          if (!l) return;
+          const visible = !seriesVisible || seriesVisible[j];
+          l.style("stroke-width", LINE_STROKE_WIDTH).style("opacity", visible ? 1 : 0.15);
+          const rl = l.rightLabel;
+          if (rl) rl.style("font-weight", LABEL_FONT_WEIGHT).style("opacity", visible ? 1 : 0.15);
+          g.select(`.markers-${j}`).style("opacity", visible ? 1 : 0.15);
+        });
+      });
+  });
+}
+
